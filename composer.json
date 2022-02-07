@@ -5,7 +5,9 @@
   "require": {
     "php": "^7.4|^8.0",
     "laravel/framework": "^8.0",
-    "escolalms/core": "^1.2.2"
+    "escolalms/core": "^1.2.2",
+    "escolalms/templates": "^0.2.5",
+    "aloha/twilio": "^5.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",
@@ -21,7 +23,8 @@
   "autoload": {
     "psr-4": {
       "EscolaLms\\TemplatesSms\\": "src",
-      "EscolaLms\\TemplatesSms\\Tests\\": "tests"
+      "EscolaLms\\TemplatesSms\\Tests\\": "tests",
+      "EscolaLms\\TemplatesSms\\Database\\Seeders\\": "database/seeders"
     }
   },
   "extra": {
@@ -30,6 +33,11 @@
         "EscolaLms\\TemplatesSms\\EscolaLmsTemplatesSmsServiceProvider"
       ]
     }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php ./vendor/bin/testbench package:discover --ansi"
+    ]
   },
   "config": {
     "optimize-autoloader": false,

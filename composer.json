@@ -7,6 +7,7 @@
     "laravel/framework": "^8.0",
     "escolalms/core": "^1.2.2",
     "escolalms/templates": "^0.2.5",
+    "escolalms/settings": "^0",
     "aloha/twilio": "^5.0.0"
   },
   "require-dev": {

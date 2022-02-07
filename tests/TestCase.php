@@ -3,6 +3,7 @@
 namespace EscolaLms\TemplatesSms\Tests;
 
 use EscolaLms\Core\Models\User;
+use EscolaLms\Settings\EscolaLmsSettingsServiceProvider;
 use EscolaLms\TemplatesSms\EscolaLmsTemplatesSmsServiceProvider;
 use EscolaLms\Templates\Database\Seeders\PermissionTableSeeder as TemplatesPermissionTableSeeder;
 use EscolaLms\Templates\EscolaLmsTemplatesServiceProvider;
@@ -27,6 +28,7 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
             PassportServiceProvider::class,
             PermissionServiceProvider::class,
             EscolaLmsTemplatesServiceProvider::class,
+            EscolaLmsSettingsServiceProvider::class,
             EscolaLmsTemplatesSmsServiceProvider::class,
         ];
     }

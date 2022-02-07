@@ -38,7 +38,7 @@ class SmsChannelTest extends TestCase
 
         $preview = Template::sendPreview($admin, $template);
         $arr = $preview->toArray();
-        
+
         $this->assertStringContainsString($admin->email, $arr['data']['content']);
         $this->assertTrue($arr['sent']);
     }

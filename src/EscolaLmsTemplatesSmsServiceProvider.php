@@ -2,6 +2,7 @@
 
 namespace EscolaLms\TemplatesSms;
 
+use EscolaLms\TemplatesSms\Providers\SettingsServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
@@ -11,6 +12,8 @@ class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/config.php', self::CONFIG_KEY);
+
+        $this->app->register(SettingsServiceProvider::class);
     }
 
     public function boot()

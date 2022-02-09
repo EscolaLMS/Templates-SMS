@@ -2,7 +2,7 @@
 
 namespace EscolaLms\TemplatesSms\Core;
 
-use Aloha\Twilio\Support\Laravel\Facade as Twilio;
+use Aloha\Twilio\Twilio;
 use EscolaLms\Templates\Contracts\TemplateChannelContract;
 use EscolaLms\Templates\Core\AbstractTemplateChannelClass;
 use EscolaLms\Templates\Core\TemplateSectionSchema;
@@ -18,17 +18,23 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
     public static function send(EventWrapper $event, array $sections): bool
     {
         $user = $event->user();
-        if ($user->phone) {
-            // TODO get from config
-            // config('escolalms_templates_sms.twilio.sid'),
-            // config('escolalms_templates_sms.twilio.token'),
-            // config('escolalms_templates_sms.twilio.from'),
-            Twilio::message($user->phone, $sections['content']);
 
-            return true;
+        $channelEnabled =
+            isset($user->notification_channels)
+            && array_search(SmsChannel::class, json_decode($user->notification_channels));
+
+        if (!$channelEnabled || !$user->phone) {
+            return false;
         }
 
-        return false;
+        $sid = config('escolalms_templates_sms.twilio.sid');
+        $token = config('escolalms_templates_sms.twilio.token');
+        $from = config('escolalms_templates_sms.twilio.from');
+
+        $twilio = new Twilio($sid, $token, $from);
+        $twilio->message($user->phone, $sections['content']);
+
+        return true;
     }
 
     public static function preview(User $user, array $sections): bool

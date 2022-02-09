@@ -37,5 +37,9 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
     {
         $app['config']->set('auth.providers.users.model', User::class);
         $app['config']->set('passport.client_uuids', true);
+
+        $app['config']->set('escolalms_templates_sms.twilio.sid', 'XYZ');
+        $app['config']->set('escolalms_templates_sms.twilio.token', 'XYZ');
+        $app['config']->set('escolalms_templates_sms.twilio.from', '+49600600600');
     }
 }

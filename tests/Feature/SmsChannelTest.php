@@ -60,6 +60,9 @@ class SmsChannelTest extends TestCase
         $event = new TestEvent($admin, $user);
         $status = SmsChannel::send(new EventWrapper($event), $template->sections->toArray());
 
+        Sms::assertNotSent($user->phone);
+        Sms::assertNotSent($admin->phone);
+
         $this->assertFalse($status);
     }
 
@@ -86,6 +89,9 @@ class SmsChannelTest extends TestCase
         $event = new TestEvent($user, $admin);
 
         $status = SmsChannel::send(new EventWrapper($event), $template->sections->first()->toArray());
+
+        Sms::assertSent($user->phone);
+        Sms::assertNotSent($admin->phone);
 
         $this->assertTrue($status);
     }

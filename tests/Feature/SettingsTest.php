@@ -5,7 +5,6 @@ namespace EscolaLms\TemplatesSms\Tests\Feature;
 use EscolaLms\Core\Tests\CreatesUsers;
 use EscolaLms\Settings\Database\Seeders\PermissionTableSeeder;
 use EscolaLms\TemplatesSms\Enums\ConfigEnum;
-use EscolaLms\TemplatesSms\Providers\SettingsServiceProvider;
 use EscolaLms\TemplatesSms\Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;

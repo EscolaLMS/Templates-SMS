@@ -2,16 +2,15 @@
 
 namespace EscolaLms\TemplatesSms;
 
+use EscolaLms\TemplatesSms\Enums\ConfigEnum;
 use EscolaLms\TemplatesSms\Providers\SettingsServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
 {
-    const CONFIG_KEY = 'escolalms_templates_sms';
-
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/config.php', self::CONFIG_KEY);
+        $this->mergeConfigFrom(__DIR__ . '/config.php', ConfigEnum::CONFIG_KEY);
 
         $this->app->register(SettingsServiceProvider::class);
     }
@@ -26,7 +25,7 @@ class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
     public function bootForConsole()
     {
         $this->publishes([
-            __DIR__ . '/config.php' => config_path(self::CONFIG_KEY . '.php'),
-        ], self::CONFIG_KEY . '.config');
+            __DIR__ . '/config.php' => config_path(ConfigEnum::CONFIG_KEY . '.php'),
+        ], ConfigEnum::CONFIG_KEY . '.config');
     }
 }

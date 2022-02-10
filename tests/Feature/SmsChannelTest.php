@@ -10,6 +10,7 @@ use EscolaLms\Templates\Events\EventWrapper;
 use EscolaLms\Templates\Facades\Template;
 use EscolaLms\Templates\Repository\Contracts\TemplateRepositoryContract;
 use EscolaLms\TemplatesSms\Database\Seeders\TemplateSmsSeeder;
+use EscolaLms\TemplatesSms\Facades\Sms;
 use EscolaLms\TemplatesSms\Tests\Mocks\TestEvent;
 use EscolaLms\TemplatesSms\Tests\Mocks\TestVariables;
 use EscolaLms\TemplatesSms\Tests\TestCase;
@@ -49,6 +50,8 @@ class SmsChannelTest extends TestCase
     public function testSmsChannelNotificationDisabled()
     {
         Event::fake();
+        Sms::fake();
+
         $user = $this->makeStudent();
         $admin = $this->makeAdmin();
 
@@ -63,6 +66,7 @@ class SmsChannelTest extends TestCase
     public function testSmsChannelNotificationEnabled()
     {
         Event::fake();
+        Sms::fake();
 
         $user = $this->makeStudent(
             [
@@ -79,11 +83,8 @@ class SmsChannelTest extends TestCase
 
         $template = app(TemplateRepositoryContract::class)->findTemplateDefault(TestEvent::class, SmsChannel::class);
 
-        $this->mock('overload:' . Twilio::class)
-            ->shouldReceive('message')
-            ->andReturn((new Dummy())->message($user->phone, $template->sections->first()->toArray()['content']));
-
         $event = new TestEvent($user, $admin);
+
         $status = SmsChannel::send(new EventWrapper($event), $template->sections->first()->toArray());
 
         $this->assertTrue($status);

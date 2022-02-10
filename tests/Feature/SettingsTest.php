@@ -4,6 +4,7 @@ namespace EscolaLms\TemplatesSms\Tests\Feature;
 
 use EscolaLms\Core\Tests\CreatesUsers;
 use EscolaLms\Settings\Database\Seeders\PermissionTableSeeder;
+use EscolaLms\TemplatesSms\Enums\ConfigEnum;
 use EscolaLms\TemplatesSms\Providers\SettingsServiceProvider;
 use EscolaLms\TemplatesSms\Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -37,7 +38,7 @@ class SettingsTest extends TestCase
 
     public function testAdministrableConfigApi(): void
     {
-        $configKey = SettingsServiceProvider::CONFIG_KEY;
+        $configKey = ConfigEnum::CONFIG_KEY;
 
         $twilioSid = $this->faker->uuid;
         $twilioToken = $this->faker->uuid;

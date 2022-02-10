@@ -2,8 +2,6 @@
 
 namespace EscolaLms\TemplatesSms\Tests\Feature;
 
-use Aloha\Twilio\Dummy;
-use Aloha\Twilio\Twilio;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
 use EscolaLms\Templates\Events\EventWrapper;
@@ -16,13 +14,14 @@ use EscolaLms\TemplatesSms\Tests\Mocks\TestVariables;
 use EscolaLms\TemplatesSms\Tests\TestCase;
 use EscolaLms\TemplatesSms\Core\SmsChannel;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 
 class SmsChannelTest extends TestCase
 {
-    use CreatesUsers, ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
+    use CreatesUsers, ApiTestTrait, WithoutMiddleware, DatabaseTransactions, WithFaker;
 
     public function setUp(): void
     {
@@ -35,8 +34,9 @@ class SmsChannelTest extends TestCase
     {
         Event::fake();
         Notification::fake();
+        Sms::fake();
 
-        $admin = $this->makeAdmin();
+        $admin = $this->makeAdmin(['phone' => $this->faker->phoneNumber]);
 
         $template = app(TemplateRepositoryContract::class)->findTemplateDefault(TestEvent::class, SmsChannel::class);
 
@@ -73,9 +73,9 @@ class SmsChannelTest extends TestCase
 
         $user = $this->makeStudent(
             [
-                'first_name' => 'Test',
-                'last_name' => 'Test',
-                'phone' => '+48600600601',
+                'first_name' => $this->faker->firstName,
+                'last_name' => $this->faker->lastName,
+                'phone' => $this->faker->phoneNumber,
                 'notification_channels' => json_encode([
                     "EscolaLms\\TemplatesEmail\\Core\\EmailChannel",
                     "EscolaLms\\TemplatesSms\\Core\\SmsChannel"

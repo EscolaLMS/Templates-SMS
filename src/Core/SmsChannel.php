@@ -32,7 +32,12 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
 
     public static function preview(User $user, array $sections): bool
     {
-        // TODO
+        if (!$user->phone) {
+            return false;
+        }
+
+        Sms::send($user->phone, $sections['content']);
+
         return true;
     }
 

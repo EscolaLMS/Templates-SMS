@@ -2,6 +2,7 @@
 
 namespace EscolaLms\TemplatesSms\Testing;
 
+use Closure;
 use EscolaLms\TemplatesSms\Drivers\Contracts\SmsDriver;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -17,34 +18,51 @@ class SmsFake implements SmsDriver
 
     public function send(string $to, string $content, array $mediaUrls = [], array $params = []): bool
     {
-        $this->sms[] = $to;
+        $this->sms[] = new Sms($to, $content, $mediaUrls, $params);
 
         return true;
     }
 
-    public function assertSent($to): void
+    public function assertSent($callback): void
     {
         PHPUnit::assertTrue(
-            $this->sentTo($to)->count() > 0,
+            $this->sent($callback)->count() > 0,
         );
     }
 
-    public function assertNotSent($to): void
+    public function assertSentTimes($callback, $times = 1): void
     {
         PHPUnit::assertCount(
-            0, $this->sentTo($to)
+            $times, $this->sent($callback)
         );
     }
 
-    public function assertSentTimes($to, $times = 1): void
+    public function assertNotSent($callback): void
     {
         PHPUnit::assertCount(
-            $times, $this->sentTo($to),
+            0, $this->sent($callback)
         );
     }
 
-    private function sentTo($to): Collection
+    private function sent($callback = null)
     {
-        return (new Collection($this->sms))->filter(fn ($item) => $item === $to);
+        $callback = $this->prepare($callback);
+        return (new Collection($this->sms))->filter($callback);
+    }
+
+    private function prepare($callback = null): Closure
+    {
+        if ($callback instanceof Closure) {
+            $callback = function (Sms $sms) use ($callback) {
+                return $callback($sms);
+            };
+        }
+        else {
+            $callback = function (Sms $sms) use ($callback) {
+                return $sms->to == $callback;
+            };
+        }
+
+        return $callback;
     }
 }

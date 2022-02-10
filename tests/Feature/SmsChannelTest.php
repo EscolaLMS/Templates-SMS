@@ -58,12 +58,10 @@ class SmsChannelTest extends TestCase
         $template = app(TemplateRepositoryContract::class)->findTemplateDefault(TestEvent::class, SmsChannel::class);
 
         $event = new TestEvent($admin, $user);
-        $status = SmsChannel::send(new EventWrapper($event), $template->sections->toArray());
+        SmsChannel::send(new EventWrapper($event), $template->sections->toArray());
 
         Sms::assertNotSent($user->phone);
         Sms::assertNotSent($admin->phone);
-
-        $this->assertFalse($status);
     }
 
     public function testSmsChannelNotificationEnabled()
@@ -85,14 +83,17 @@ class SmsChannelTest extends TestCase
         $admin = $this->makeAdmin();
 
         $template = app(TemplateRepositoryContract::class)->findTemplateDefault(TestEvent::class, SmsChannel::class);
+        $templateSection = $template->sections->first()->toArray();
 
         $event = new TestEvent($user, $admin);
 
-        $status = SmsChannel::send(new EventWrapper($event), $template->sections->first()->toArray());
+        SmsChannel::send(new EventWrapper($event), $templateSection);
 
         Sms::assertSent($user->phone);
+        Sms::assertSentTimes($user->phone);
+        Sms::assertSent(function ($sms) use ($templateSection) {
+            return $sms->content === $templateSection['content'];
+        });
         Sms::assertNotSent($admin->phone);
-
-        $this->assertTrue($status);
     }
 }

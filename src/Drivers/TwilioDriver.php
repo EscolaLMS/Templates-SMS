@@ -25,7 +25,6 @@ class TwilioDriver implements SmsDriver
         try {
              $this->twilio->message($to, $content, $mediaUrls, $params);
         } catch (\Exception $exception) {
-            // TODO
             return false;
         }
 

@@ -30,7 +30,7 @@ class SmsChannelTest extends TestCase
         $this->seed(TemplateSmsSeeder::class);
     }
 
-    public function testPreview()
+    public function testPreview(): void
     {
         Event::fake();
         Notification::fake();
@@ -45,9 +45,10 @@ class SmsChannelTest extends TestCase
 
         $this->assertStringContainsString($admin->email, $arr['data']['content']);
         $this->assertTrue($arr['sent']);
+        Sms::assertSent($admin->phone);
     }
 
-    public function testSmsChannelNotificationDisabled()
+    public function testSmsChannelNotificationDisabled(): void
     {
         Event::fake();
         Sms::fake();
@@ -64,7 +65,7 @@ class SmsChannelTest extends TestCase
         Sms::assertNotSent($admin->phone);
     }
 
-    public function testSmsChannelNotificationEnabled()
+    public function testSmsChannelNotificationEnabled(): void
     {
         Event::fake();
         Sms::fake();

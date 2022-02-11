@@ -34,9 +34,7 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
             return false;
         }
 
-        Sms::send($user->phone, $sections['content']);
-
-        return true;
+        return Sms::send($user->phone, $sections['content']);
     }
 
     public static function sections(): Collection

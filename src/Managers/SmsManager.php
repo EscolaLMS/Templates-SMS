@@ -17,6 +17,10 @@ class SmsManager extends Manager
 
     protected function createTwilioDriver(): SmsDriver
     {
-        return new TwilioDriver();
+        $sid = $this->config->get(ConfigEnum::CONFIG_KEY . '.twilio.sid');
+        $token = $this->config->get(ConfigEnum::CONFIG_KEY . '.twilio.token');
+        $from = $this->config->get(ConfigEnum::CONFIG_KEY . '.twilio.from');
+
+        return new TwilioDriver($sid, $token, $from);
     }
 }

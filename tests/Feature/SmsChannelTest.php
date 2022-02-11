@@ -50,16 +50,12 @@ class SmsChannelTest extends TestCase
 
     public function testSmsChannelNotificationDisabled(): void
     {
-        Event::fake();
         Sms::fake();
 
         $user = $this->makeStudent();
         $admin = $this->makeAdmin();
 
-        $template = app(TemplateRepositoryContract::class)->findTemplateDefault(TestEvent::class, SmsChannel::class);
-
-        $event = new TestEvent($admin, $user);
-        SmsChannel::send(new EventWrapper($event), $template->sections->toArray());
+        event(new TestEvent($user, $admin));
 
         Sms::assertNotSent($user->phone);
         Sms::assertNotSent($admin->phone);
@@ -67,7 +63,6 @@ class SmsChannelTest extends TestCase
 
     public function testSmsChannelNotificationEnabled(): void
     {
-        Event::fake();
         Sms::fake();
 
         $user = $this->makeStudent(
@@ -83,18 +78,15 @@ class SmsChannelTest extends TestCase
         );
         $admin = $this->makeAdmin();
 
-        $template = app(TemplateRepositoryContract::class)->findTemplateDefault(TestEvent::class, SmsChannel::class);
-        $templateSection = $template->sections->first()->toArray();
-
-        $event = new TestEvent($user, $admin);
-
-        SmsChannel::send(new EventWrapper($event), $templateSection);
+        event(new TestEvent($user, $admin));
 
         Sms::assertSent($user->phone);
-        Sms::assertSentTimes($user->phone);
-        Sms::assertSent(function ($sms) use ($templateSection) {
-            return $sms->content === $templateSection['content'];
+        Sms::assertSent(function ($sms) use ($user, $admin) {
+            return str_contains($sms->content, $user->email) && str_contains($sms->content, $admin->email);
         });
         Sms::assertNotSent($admin->phone);
+
+        event(new TestEvent($user, $admin));
+        Sms::assertSentTimes($user->phone, 2);
     }
 }

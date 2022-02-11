@@ -11,13 +11,9 @@ class TwilioDriver implements SmsDriver
 {
     private TwilioInterface $twilio;
 
-    public function __construct()
+    public function __construct(string $sid, string $token, string $from, bool $sslVerify = true)
     {
-        $sid = config(ConfigEnum::CONFIG_KEY . '.twilio.sid');
-        $token = config(ConfigEnum::CONFIG_KEY . '.twilio.token');
-        $from = config(ConfigEnum::CONFIG_KEY . '.twilio.from');
-
-        $this->twilio = new Twilio($sid, $token, $from);
+        $this->twilio = new Twilio($sid, $token, $from, $sslVerify);
     }
 
     public function send(string $to, string $content, array $mediaUrls = [], $params = []): bool

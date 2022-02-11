@@ -41,5 +41,6 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
         $app['config']->set('escolalms_templates_sms.twilio.sid', 'XYZ');
         $app['config']->set('escolalms_templates_sms.twilio.token', 'XYZ');
         $app['config']->set('escolalms_templates_sms.twilio.from', '+49600600600');
+        $app['config']->set('escolalms_templates_sms.twilio.ssl_verify', true);
     }
 }

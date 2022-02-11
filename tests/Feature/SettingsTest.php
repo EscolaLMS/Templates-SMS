@@ -42,6 +42,7 @@ class SettingsTest extends TestCase
         $twilioSid = $this->faker->uuid;
         $twilioToken = $this->faker->uuid;
         $twilioFrom = $this->faker->phoneNumber;
+        $twilioSslVerify = $this->faker->boolean;
 
         $this->response = $this->actingAs($this->user, 'api')->json(
             'POST',
@@ -59,6 +60,10 @@ class SettingsTest extends TestCase
                     [
                         'key' => "$configKey.twilio.from",
                         'value' => $twilioFrom,
+                    ],
+                    [
+                        'key' => "$configKey.twilio.ssl_verify",
+                        'value' => $twilioSslVerify,
                     ],
                 ]
             ]
@@ -106,6 +111,16 @@ class SettingsTest extends TestCase
                         ],
                         'public' => false,
                         'value' => $twilioFrom,
+                        'readonly' => false,
+                    ],
+                    'ssl_verify' => [
+                        'full_key' => "$configKey.twilio.ssl_verify",
+                        'key' => 'twilio.ssl_verify',
+                        'rules' => [
+                            'boolean',
+                        ],
+                        'public' => false,
+                        'value' => $twilioSslVerify,
                         'readonly' => false,
                     ],
                 ],

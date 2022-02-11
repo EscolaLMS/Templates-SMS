@@ -19,6 +19,7 @@ class SettingsServiceProvider extends ServiceProvider
             AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.twilio.sid', ['required', 'string'], false);
             AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.twilio.token', ['required', 'string'], false);
             AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.twilio.from', ['required', 'string'], false);
+            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.twilio.ssl_verify', ['boolean'], false);
         }
     }
 }

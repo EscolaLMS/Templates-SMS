@@ -20,7 +20,8 @@ class SmsManager extends Manager
         $sid = $this->config->get(ConfigEnum::CONFIG_KEY . '.twilio.sid');
         $token = $this->config->get(ConfigEnum::CONFIG_KEY . '.twilio.token');
         $from = $this->config->get(ConfigEnum::CONFIG_KEY . '.twilio.from');
+        $sslVerify = $this->config->get(ConfigEnum::CONFIG_KEY . '.twilio.ssl_verify') ?? true;
 
-        return new TwilioDriver($sid, $token, $from);
+        return new TwilioDriver($sid, $token, $from, $sslVerify);
     }
 }

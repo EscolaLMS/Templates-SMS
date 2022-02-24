@@ -2,6 +2,7 @@
 
 namespace EscolaLms\TemplatesSms\Tests;
 
+use EscolaLms\Consultations\EscolaLmsConsultationsServiceProvider;
 use EscolaLms\Core\Models\User;
 use EscolaLms\Settings\EscolaLmsSettingsServiceProvider;
 use EscolaLms\TemplatesSms\EscolaLmsTemplatesSmsServiceProvider;
@@ -29,6 +30,7 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
             PermissionServiceProvider::class,
             EscolaLmsTemplatesServiceProvider::class,
             EscolaLmsSettingsServiceProvider::class,
+            EscolaLmsConsultationsServiceProvider::class,
             EscolaLmsTemplatesSmsServiceProvider::class,
         ];
     }

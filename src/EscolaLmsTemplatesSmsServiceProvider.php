@@ -2,7 +2,9 @@
 
 namespace EscolaLms\TemplatesSms;
 
+use EscolaLms\Consultations\EscolaLmsConsultationsServiceProvider;
 use EscolaLms\TemplatesSms\Enums\ConfigEnum;
+use EscolaLms\TemplatesSms\Providers\ConsultationTemplatesServiceProvider;
 use EscolaLms\TemplatesSms\Providers\SettingsServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,6 +15,10 @@ class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/config.php', ConfigEnum::CONFIG_KEY);
 
         $this->app->register(SettingsServiceProvider::class);
+
+        if (class_exists(EscolaLmsConsultationsServiceProvider::class)) {
+            $this->app->register(ConsultationTemplatesServiceProvider::class);
+        }
     }
 
     public function boot()

@@ -6,13 +6,14 @@ use EscolaLms\Core\Tests\CreatesUsers;
 use EscolaLms\Settings\Database\Seeders\PermissionTableSeeder;
 use EscolaLms\TemplatesSms\Enums\ConfigEnum;
 use EscolaLms\TemplatesSms\Tests\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Facades\Config;
 
 class SettingsTest extends TestCase
 {
-    use CreatesUsers, WithoutMiddleware, WithFaker;
+    use CreatesUsers, WithoutMiddleware, WithFaker, DatabaseTransactions;
 
     protected function setUp(): void
     {
@@ -28,11 +29,6 @@ class SettingsTest extends TestCase
         $this->user = config('auth.providers.users.model')::factory()->create();
         $this->user->guard_name = 'api';
         $this->user->assignRole('admin');
-    }
-
-    protected function tearDown(): void
-    {
-        \EscolaLms\Settings\Models\Config::truncate();
     }
 
     public function testAdministrableConfigApi(): void

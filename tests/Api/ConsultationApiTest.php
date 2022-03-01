@@ -6,6 +6,7 @@ use EscolaLms\Cart\Events\CartOrderPaid;
 use EscolaLms\Cart\Models\Order;
 use EscolaLms\Cart\Models\OrderItem;
 use EscolaLms\Cart\Models\User;
+use EscolaLms\Consultations\Events\ApprovedTerm;
 use EscolaLms\Consultations\Events\ReportTerm;
 use EscolaLms\Consultations\Listeners\ReportTermListener;
 use EscolaLms\Consultations\Models\Consultation;
@@ -31,6 +32,7 @@ class ConsultationApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->user = User::factory()->create([
             'phone' => '666888111',
             'notification_channels' => json_encode([
@@ -42,10 +44,10 @@ class ConsultationApiTest extends TestCase
         $this->user->assignRole('tutor');
     }
 
-    public function testConsultationReportTerm()
+    public function testConsultationReportTerm(): void
     {
         Sms::fake();
-        $this->makeTemplate();
+        $this->makeTemplate(ReportTerm::class);
 
         $orderItem = $this->createOrder()->items()->first();
         $this->response = $this->actingAs($this->user, 'api')
@@ -55,6 +57,33 @@ class ConsultationApiTest extends TestCase
                     'term' => now()->modify('+1 day')->format('Y-m-d H:i:s')
                 ]
             );
+
+        Sms::assertSent(function ($sms) {
+            return $sms->to === $this->user->phone
+                && str_contains($sms->content, `{$this->user->first_name} {$this->user->last_name}`);
+        });
+    }
+
+    public function testConsultationApprovedTerm(): void
+    {
+        Sms::fake();
+        $this->makeTemplate(ApprovedTerm::class);
+
+        $orderItem = $this->createOrder()->items()->first();
+        $this->response = $this->actingAs($this->user, 'api')
+            ->json('POST',
+                '/api/consultations/report-term/' . $orderItem->getKey(),
+                [
+                    'term' => now()->modify('+1 day')->format('Y-m-d H:i:s')
+                ]
+            );
+
+        $consultationTermsRepositoryContract = app(ConsultationTermsRepositoryContract::class);
+        $consultationTerm = $consultationTermsRepositoryContract->findByOrderItem($orderItem->getKey());
+        $this->response = $this->actingAs($this->user, 'api')->json(
+            'GET',
+            '/api/consultations/approve-term/' . $consultationTerm->getKey()
+        );
 
         Sms::assertSent(function ($sms) {
             return $sms->to === $this->user->phone
@@ -93,12 +122,12 @@ class ConsultationApiTest extends TestCase
         return Order::whereUserId($this->user->getKey())->first();
     }
 
-    private function makeTemplate(): void
+    private function makeTemplate(string $eventClass): void
     {
         $template = Template::factory()->create([
             'name' => 'Sms ReportTerm',
             'channel' => SmsChannel::class,
-            'event' => ReportTerm::class,
+            'event' => $eventClass,
             'default' => true,
         ]);
 

@@ -2,9 +2,9 @@
 
 namespace EscolaLms\TemplatesSms\Consultations;
 
-class ReportTermVariables extends CommonConsultationVariables
+class ApprovedTermVariables extends CommonConsultationVariables
 {
-    const VAR_REPORT_TERM = '@VarReportTerm';
+    const VAR_APPROVED_TERM = '@VarApprovedTermVariables';
 
     // TODO Add variable to sms
     public static function defaultSectionsContent(): array

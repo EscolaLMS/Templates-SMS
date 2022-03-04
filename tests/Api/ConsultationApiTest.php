@@ -2,7 +2,7 @@
 
 namespace EscolaLms\TemplatesSms\Tests\Api;
 
-use EscolaLms\Cart\Events\CartOrderPaid;
+use EscolaLms\Cart\Events\OrderPaid;
 use EscolaLms\Cart\Models\Order;
 use EscolaLms\Cart\Models\OrderItem;
 use EscolaLms\Cart\Models\User;
@@ -114,7 +114,7 @@ class ConsultationApiTest extends TestCase
         ]);
 
         Event::fakeFor(function () use ($order) {
-            $event = new CartOrderPaid($this->user, $order);
+            $event = new OrderPaid($order, $this->user);
             $listener = app(ReportTermListener::class);
             $listener->handle($event);
         });

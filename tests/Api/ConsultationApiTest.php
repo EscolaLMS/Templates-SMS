@@ -10,24 +10,18 @@ use EscolaLms\Consultations\Events\ApprovedTerm;
 use EscolaLms\Consultations\Events\ReportTerm;
 use EscolaLms\Consultations\Listeners\ReportTermListener;
 use EscolaLms\Consultations\Models\Consultation;
-use EscolaLms\Consultations\Models\ConsultationTerm;
 use EscolaLms\Consultations\Repositories\Contracts\ConsultationTermsRepositoryContract;
-use EscolaLms\Templates\Database\Factories\TemplateSectionFactory;
-use EscolaLms\Templates\Listeners\TemplateEventListener;
 use EscolaLms\Templates\Models\Template;
 use EscolaLms\Templates\Models\TemplateSection;
 use EscolaLms\TemplatesSms\Core\SmsChannel;
-use EscolaLms\TemplatesSms\Database\Seeders\TemplateSmsSeeder;
 use EscolaLms\TemplatesSms\Facades\Sms;
-use EscolaLms\TemplatesSms\Testing\SmsFake;
 use EscolaLms\TemplatesSms\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
 
 class ConsultationApiTest extends TestCase
 {
-    use DatabaseTransactions, WithFaker;
+    use DatabaseTransactions;
 
     protected function setUp(): void
     {
@@ -60,7 +54,7 @@ class ConsultationApiTest extends TestCase
 
         Sms::assertSent(function ($sms) {
             return $sms->to === $this->user->phone
-                && str_contains($sms->content, `{$this->user->first_name} {$this->user->last_name}`);
+                && str_contains($sms->content, ($this->user->first_name . ' ' . $this->user->last_name));
         });
     }
 
@@ -87,7 +81,7 @@ class ConsultationApiTest extends TestCase
 
         Sms::assertSent(function ($sms) {
             return $sms->to === $this->user->phone
-                && str_contains($sms->content, `{$this->user->first_name} {$this->user->last_name}`);
+                && str_contains($sms->content, ($this->user->first_name . ' ' . $this->user->last_name));
         });
     }
 

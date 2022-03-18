@@ -6,6 +6,7 @@ use EscolaLms\Consultations\EscolaLmsConsultationsServiceProvider;
 use EscolaLms\TemplatesSms\Enums\ConfigEnum;
 use EscolaLms\TemplatesSms\Providers\ConsultationTemplatesServiceProvider;
 use EscolaLms\TemplatesSms\Providers\SettingsServiceProvider;
+use EscolaLms\TemplatesSms\Providers\TemplateServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
@@ -19,6 +20,8 @@ class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
         if (class_exists(EscolaLmsConsultationsServiceProvider::class)) {
             $this->app->register(ConsultationTemplatesServiceProvider::class);
         }
+
+        $this->app->register(TemplateServiceProvider::class);
     }
 
     public function boot()

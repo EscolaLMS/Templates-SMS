@@ -5,6 +5,8 @@ namespace EscolaLms\TemplatesSms\Tests\Api;
 use EscolaLms\Cart\Events\OrderPaid;
 use EscolaLms\Cart\Models\Order;
 use EscolaLms\Cart\Models\OrderItem;
+use EscolaLms\Cart\Models\Product;
+use EscolaLms\Cart\Models\ProductProductable;
 use EscolaLms\Cart\Models\User;
 use EscolaLms\Consultations\Events\ApprovedTerm;
 use EscolaLms\Consultations\Events\ReportTerm;
@@ -93,10 +95,15 @@ class ConsultationApiTest extends TestCase
             fn (Order $order) => $order->items()->saveMany(
                 $consultationsForOrder->map(
                     function (Consultation $consultation) {
+                        $product = Product::factory()->create();
+                        $product->productables()->save(new ProductProductable([
+                            'productable_id' => $consultation->getKey(),
+                            'productable_type' => $consultation->getMorphClass(),
+                        ]));
                         return OrderItem::query()->make([
                             'quantity' => 1,
-                            'buyable_id' => $consultation->getKey(),
-                            'buyable_type' => Consultation::class,
+                            'buyable_id' => $product->getKey(),
+                            'buyable_type' => Product::class,
                         ]);
                     }
                 )

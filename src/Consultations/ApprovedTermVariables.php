@@ -4,13 +4,14 @@ namespace EscolaLms\TemplatesSms\Consultations;
 
 class ApprovedTermVariables extends CommonConsultationVariables
 {
-    const VAR_APPROVED_TERM = '@VarApprovedTermVariables';
-
-    // TODO Add variable to sms
     public static function defaultSectionsContent(): array
     {
         return [
-            'content' => ''
+            'content' => __('Hello :user_name! Reported term :proposed_term for consultation ":consultation" was approved.', [
+                'user_name' => self::VAR_USER_NAME,
+                'consultation' => self::VAR_CONSULTATION_TITLE,
+                'proposed_term' => self::VAR_CONSULTATION_PROPOSED_TERM
+            ]),
         ];
     }
 }

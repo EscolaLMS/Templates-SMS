@@ -2,7 +2,7 @@
 
 namespace EscolaLms\TemplatesSms\Tests\Api;
 
-use EscolaLms\Cart\Models\User;
+use EscolaLms\Core\Models\User;
 use EscolaLms\Core\Tests\CreatesUsers;
 use EscolaLms\Templates\Events\ManuallyTriggeredEvent;
 use EscolaLms\Templates\Listeners\TemplateEventListener;

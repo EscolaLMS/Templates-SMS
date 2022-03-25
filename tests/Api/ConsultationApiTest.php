@@ -2,30 +2,22 @@
 
 namespace EscolaLms\TemplatesSms\Tests\Api;
 
-use EscolaLms\Cart\Events\OrderPaid;
-use EscolaLms\Cart\Models\Order;
-use EscolaLms\Cart\Models\OrderItem;
-use EscolaLms\Cart\Models\Product;
-use EscolaLms\Cart\Models\ProductProductable;
-use EscolaLms\Cart\Models\User;
-use EscolaLms\Consultations\Events\ApprovedTerm;
-use EscolaLms\Consultations\Events\ReportTerm;
-use EscolaLms\Consultations\Listeners\ReportTermListener;
+use EscolaLms\Consultations\Enum\ConsultationTermReminderStatusEnum;
+use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
+use EscolaLms\Consultations\Jobs\ReminderAboutConsultationJob;
 use EscolaLms\Consultations\Models\Consultation;
-use EscolaLms\Consultations\Models\ConsultationTerm;
-use EscolaLms\Consultations\Repositories\Contracts\ConsultationTermsRepositoryContract;
-use EscolaLms\Templates\Models\Template;
-use EscolaLms\Templates\Models\TemplateSection;
-use EscolaLms\TemplatesSms\Core\SmsChannel;
+use EscolaLms\Consultations\Models\ConsultationUserPivot;
+use EscolaLms\Core\Models\User;
 use EscolaLms\TemplatesSms\Database\Seeders\TemplateSmsSeeder;
 use EscolaLms\TemplatesSms\Facades\Sms;
 use EscolaLms\TemplatesSms\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Event;
 
 class ConsultationApiTest extends TestCase
 {
     use DatabaseTransactions;
+    private Consultation $consultation;
+    private ConsultationUserPivot $consultationUserPivot;
 
     protected function setUp(): void
     {
@@ -46,82 +38,71 @@ class ConsultationApiTest extends TestCase
 
     public function testConsultationReportTerm(): void
     {
+        $this->initVariable();
         Sms::fake();
-
-        $orderItem = $this->createOrder()->items()->first();
         $this->response = $this->actingAs($this->user, 'api')
             ->json('POST',
-                '/api/consultations/report-term/' . $orderItem->getKey(),
+                '/api/consultations/report-term/' . $this->consultationUserPivot->getKey(),
                 [
                     'term' => now()->modify('+1 day')->format('Y-m-d H:i:s')
                 ]
             );
 
-        $consultationTermsRepositoryContract = app(ConsultationTermsRepositoryContract::class);
-        $consultationTerm = $consultationTermsRepositoryContract->findByOrderItem($orderItem->getKey());
-        $this->assertSms($consultationTerm);
+        $this->assertSms($this->consultationUserPivot);
     }
 
     public function testConsultationApprovedTerm(): void
     {
+        $this->initVariable();
         Sms::fake();
-
-        $orderItem = $this->createOrder()->items()->first();
         $this->response = $this->actingAs($this->user, 'api')
             ->json('POST',
-                '/api/consultations/report-term/' . $orderItem->getKey(),
+                '/api/consultations/report-term/' . $this->consultationUserPivot->getKey(),
                 [
                     'term' => now()->modify('+1 day')->format('Y-m-d H:i:s')
                 ]
             );
-
-        $consultationTermsRepositoryContract = app(ConsultationTermsRepositoryContract::class);
-        $consultationTerm = $consultationTermsRepositoryContract->findByOrderItem($orderItem->getKey());
+        $this->consultationUserPivot->refresh();
         $this->response = $this->actingAs($this->user, 'api')->json(
             'GET',
-            '/api/consultations/approve-term/' . $consultationTerm->getKey()
+            '/api/consultations/approve-term/' . $this->consultationUserPivot->getKey()
         );
 
-        $this->assertSms($consultationTerm);
+        $this->assertSms($this->consultationUserPivot);
     }
 
-    private function createOrder(): Order
+    public function testReminderAboutConsultationBeforeHour()
     {
-        $consultationsForOrder = Consultation::factory(3)->create();
-        $price = $consultationsForOrder->reduce(fn ($acc, Consultation $consultation) => $acc + $consultation->getBuyablePrice(), 0);
-        $order = Order::factory()->afterCreating(
-            fn (Order $order) => $order->items()->saveMany(
-                $consultationsForOrder->map(
-                    function (Consultation $consultation) {
-                        $product = Product::factory()->create();
-                        $product->productables()->save(new ProductProductable([
-                            'productable_id' => $consultation->getKey(),
-                            'productable_type' => $consultation->getMorphClass(),
-                        ]));
-                        return OrderItem::query()->make([
-                            'quantity' => 1,
-                            'buyable_id' => $product->getKey(),
-                            'buyable_type' => Product::class,
-                        ]);
-                    }
-                )
-            )
-        )->create([
+        Sms::fake();
+        $this->consultation = Consultation::factory()->create();
+        $this->consultationUserPivot = ConsultationUserPivot::factory([
+            'consultation_id' => $this->consultation->getKey(),
             'user_id' => $this->user->getKey(),
-            'total' => $price,
-            'subtotal' => $price,
-        ]);
-
-        Event::fakeFor(function () use ($order) {
-            $event = new OrderPaid($order, $this->user);
-            $listener = app(ReportTermListener::class);
-            $listener->handle($event);
-        });
-
-        return Order::whereUserId($this->user->getKey())->first();
+            'executed_at' => now()->modify('+1 hour')->format('Y-m-d H:i:s'),
+            'executed_status' => ConsultationTermStatusEnum::APPROVED
+        ])->create();
+        $this->assertTrue($this->consultationUserPivot->reminder_status === null);
+        $job = new ReminderAboutConsultationJob(ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE);
+        $job->handle();
+        $this->consultationUserPivot->refresh();
+        $this->assertSms($this->consultationUserPivot);
+        $this->assertTrue(
+            $this->consultationUserPivot->reminder_status === ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE
+        );
     }
 
-    private function assertSms(ConsultationTerm $consultationTerm): void
+    private function initVariable(): void
+    {
+        $this->consultation = Consultation::factory()->create();
+        $this->consultationUserPivot = ConsultationUserPivot::factory([
+            'consultation_id' => $this->consultation->getKey(),
+            'user_id' => $this->user->getKey(),
+            'executed_at' => null,
+            'executed_status' => ConsultationTermStatusEnum::NOT_REPORTED,
+        ])->create();
+    }
+
+    private function assertSms(ConsultationUserPivot $consultationTerm): void
     {
         Sms::assertSent(function ($sms) use ($consultationTerm) {
             return $sms->to === $this->user->phone

@@ -3,6 +3,7 @@
 namespace EscolaLms\TemplatesSms\Providers;
 
 use EscolaLms\Consultations\Events\ApprovedTerm;
+use EscolaLms\Consultations\Events\ReminderAboutTerm;
 use EscolaLms\Consultations\Events\ReportTerm;
 use EscolaLms\Templates\Facades\Template;
 use EscolaLms\TemplatesSms\Consultations\ApprovedTermVariables;
@@ -16,5 +17,6 @@ class ConsultationTemplatesServiceProvider extends ServiceProvider
     {
         Template::register(ReportTerm::class, SmsChannel::class, ReportTermVariables::class);
         Template::register(ApprovedTerm::class, SmsChannel::class, ApprovedTermVariables::class);
+        Template::register(ReminderAboutTerm::class, SmsChannel::class, ReportTermVariables::class);
     }
 }

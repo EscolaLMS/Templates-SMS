@@ -53,14 +53,9 @@ class TemplateApiTest extends TestCase
 
         $admin = $this->makeAdmin();
         $this->response = $this->actingAs($admin, 'api')->postJson(
-            '/api/admin/events/trigger-manually',
+            '/api/admin/events/trigger-manually/' . $template->getKey(),
             ['users' => [$this->tutor->getKey()]]
         )->assertOk();
-
-        Event::assertDispatched(ManuallyTriggeredEvent::class, function (ManuallyTriggeredEvent $event) {
-            $this->assertEquals($this->tutor->getKey(), $event->getUser()->getKey());
-            return true;
-        });
 
         $listener = app(TemplateEventListener::class);
         $listener->handle(new ManuallyTriggeredEvent($this->tutor));

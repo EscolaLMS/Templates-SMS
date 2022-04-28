@@ -13,7 +13,7 @@ use EscolaLms\TemplatesSms\Facades\Sms;
 use EscolaLms\TemplatesSms\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class ConsultationApiTest extends TestCase
+class WebinarApiTest extends TestCase
 {
     use DatabaseTransactions;
     private Consultation $consultation;

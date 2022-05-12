@@ -4,8 +4,8 @@ namespace EscolaLms\TemplatesSms\Drivers;
 
 use Aloha\Twilio\Twilio;
 use Aloha\Twilio\TwilioInterface;
-use EscolaLms\TemplatesSms\Enums\ConfigEnum;
 use EscolaLms\TemplatesSms\Drivers\Contracts\SmsDriver;
+use Illuminate\Support\Facades\Log;
 
 class TwilioDriver implements SmsDriver
 {
@@ -21,6 +21,7 @@ class TwilioDriver implements SmsDriver
         try {
              $this->twilio->message($to, $content, $mediaUrls, $params);
         } catch (\Exception $exception) {
+            Log::error('[' . __CLASS__ . '] ' . $exception->getMessage());
             return false;
         }
 

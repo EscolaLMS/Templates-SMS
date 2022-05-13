@@ -62,7 +62,6 @@ class SmsFake implements SmsDriver
                 return $sms->to == $callback;
             };
         }
-
         return $callback;
     }
 }

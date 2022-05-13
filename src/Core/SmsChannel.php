@@ -17,14 +17,18 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
     {
         $user = $event->user();
 
-        $channelEnabled =
-            isset($user->notification_channels)
-            && in_array(SmsChannel::class, json_decode($user->notification_channels));
+// TODO       Is it necessary ?
 
-        if (!$channelEnabled || !$user->phone) {
+//        $channelEnabled =
+//            isset($user->notification_channels)
+//            && in_array(SmsChannel::class, json_decode($user->notification_channels));
+//
+//        if (!$channelEnabled || !$user->phone) {
+//            return false;
+//        }
+        if (!$user->phone) {
             return false;
         }
-
         return Sms::send($user->phone, $sections['content']);
     }
 

@@ -91,6 +91,38 @@ class ConsultationApiTest extends TestCase
         );
     }
 
+    public function testReminderTrainerAboutConsultationBeforeHour()
+    {
+        Sms::fake();
+        $author =  User::factory()->create([
+            'phone' => '666888111',
+            'notification_channels' => json_encode([
+                "EscolaLms\\TemplatesEmail\\Core\\EmailChannel",
+                "EscolaLms\\TemplatesSms\\Core\\SmsChannel"
+            ])
+        ]);
+        $author->guard_name = 'api';
+        $author->assignRole('tutor');
+
+        $this->consultation = Consultation::factory([
+            'author_id' => $author->getKey(),
+        ])->create();
+        $this->consultationUserPivot = ConsultationUserPivot::factory([
+            'consultation_id' => $this->consultation->getKey(),
+            'user_id' => $this->user->getKey(),
+            'executed_at' => now()->modify('+1 hour')->format('Y-m-d H:i:s'),
+            'executed_status' => ConsultationTermStatusEnum::APPROVED
+        ])->create();
+        $this->assertTrue($this->consultationUserPivot->reminder_status === null);
+        $job = new ReminderAboutConsultationJob(ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE);
+        $job->handle();
+        $this->consultationUserPivot->refresh();
+        $this->assertSms($this->consultationUserPivot);
+        $this->assertTrue(
+            $this->consultationUserPivot->reminder_status === ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE
+        );
+    }
+
     private function initVariable(): void
     {
         $this->consultation = Consultation::factory()->create();

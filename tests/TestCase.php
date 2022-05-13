@@ -8,7 +8,6 @@ use EscolaLms\Settings\EscolaLmsSettingsServiceProvider;
 use EscolaLms\TemplatesSms\EscolaLmsTemplatesSmsServiceProvider;
 use EscolaLms\Templates\Database\Seeders\PermissionTableSeeder as TemplatesPermissionTableSeeder;
 use EscolaLms\Templates\EscolaLmsTemplatesServiceProvider;
-use EscolaLms\Webinar\EscolaLmsWebinarServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Passport\PassportServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
@@ -32,7 +31,6 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
             EscolaLmsTemplatesServiceProvider::class,
             EscolaLmsSettingsServiceProvider::class,
             EscolaLmsConsultationsServiceProvider::class,
-            EscolaLmsWebinarServiceProvider::class,
             EscolaLmsTemplatesSmsServiceProvider::class,
         ];
     }

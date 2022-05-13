@@ -5,16 +5,16 @@
   "require": {
     "php": "^7.4|^8.0",
     "laravel/framework": "^8|^9",
+    "aloha/twilio": "^5.0.0",
     "escolalms/core": "^1.2.2",
-    "escolalms/templates": "^0.2.5",
-    "escolalms/settings": "^0",
-    "aloha/twilio": "^5.0.0"
+    "escolalms/templates": "^0",
+    "escolalms/settings": "^0.1.2"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.0",
-    "orchestra/testbench": ">=5.0",
+    "escolalms/auth": "^0",
     "escolalms/consultations": "^0",
-    "escolalms/webinar": "^0"
+    "orchestra/testbench": "^5.0|^6.0",
+    "phpunit/phpunit": "^9.0"
   },
   "license": "MIT",
   "authors": [

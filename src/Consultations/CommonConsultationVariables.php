@@ -2,6 +2,7 @@
 
 namespace EscolaLms\TemplatesSms\Consultations;
 
+use Carbon\Carbon;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
 use EscolaLms\Core\Models\User;
 use EscolaLms\Templates\Events\EventWrapper;
@@ -27,7 +28,9 @@ abstract class CommonConsultationVariables extends SmsVariables
         return array_merge(parent::variablesFromEvent($event), [
             self::VAR_USER_NAME => $event->getUser()->name,
             self::VAR_CONSULTATION_TITLE => $event->getConsultationTerm()->consultation->name,
-            self::VAR_CONSULTATION_PROPOSED_TERM => $event->getConsultationTerm()->executed_at,
+            self::VAR_CONSULTATION_PROPOSED_TERM => Carbon::make($event->getConsultationTerm()->executed_at)
+                ->setTimezone($event->getUser()->current_timezone)
+                ->format('Y-m-d H:i:s'),
         ]);
     }
 

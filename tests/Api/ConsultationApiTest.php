@@ -78,7 +78,12 @@ class ConsultationApiTest extends TestCase
         $this->consultationUserPivot = ConsultationUserPivot::factory([
             'consultation_id' => $this->consultation->getKey(),
             'user_id' => $this->user->getKey(),
-            'executed_at' => now()->modify('+1 hour')->format('Y-m-d H:i:s'),
+            'executed_at' => now()->modify(
+                config(
+                    'escolalms_consultations.modifier_date.' .
+                    ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE, '+1 hour'
+                )
+            )->format('Y-m-d H:i:s'),
             'executed_status' => ConsultationTermStatusEnum::APPROVED
         ])->create();
         $this->assertTrue($this->consultationUserPivot->reminder_status === null);
@@ -110,7 +115,12 @@ class ConsultationApiTest extends TestCase
         $this->consultationUserPivot = ConsultationUserPivot::factory([
             'consultation_id' => $this->consultation->getKey(),
             'user_id' => $this->user->getKey(),
-            'executed_at' => now()->modify('+1 hour')->format('Y-m-d H:i:s'),
+            'executed_at' => now()->modify(
+                config(
+                    'escolalms_consultations.modifier_date.' .
+                    ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE, '+1 hour'
+                )
+            )->format('Y-m-d H:i:s'),
             'executed_status' => ConsultationTermStatusEnum::APPROVED
         ])->create();
         $this->assertTrue($this->consultationUserPivot->reminder_status === null);

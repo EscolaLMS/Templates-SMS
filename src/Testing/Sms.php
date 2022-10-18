@@ -10,7 +10,7 @@ class Sms
     public ?array $params;
 
     /**
-     * @param array $to
+     * @param string $to
      * @param string $content
      * @param array|null $mediaUrls
      * @param array|null $params

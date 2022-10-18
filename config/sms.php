@@ -24,7 +24,7 @@ return [
     */
     'drivers' => [
         'mail' => [
-            'subject' => 'SMS'
+            'subject' => 'SMS',
         ],
         'requestbin' => [
             'path' => 'Your request bin path',

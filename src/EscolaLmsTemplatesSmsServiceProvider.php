@@ -13,7 +13,7 @@ class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/config.php', ConfigEnum::CONFIG_KEY);
+        $this->mergeConfigFrom(__DIR__ . '/../config/sms.php', ConfigEnum::CONFIG_KEY);
 
         $this->app->register(SettingsServiceProvider::class);
 
@@ -34,7 +34,7 @@ class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
     public function bootForConsole()
     {
         $this->publishes([
-            __DIR__ . '/config.php' => config_path(ConfigEnum::CONFIG_KEY . '.php'),
+            __DIR__ . '/../config/sms.php' => config_path(ConfigEnum::CONFIG_KEY . '.php'),
         ], ConfigEnum::CONFIG_KEY . '.config');
     }
 }

@@ -11,6 +11,7 @@ use EscolaLms\Templates\EscolaLmsTemplatesServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Passport\PassportServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
+use Tzsk\Sms\SmsServiceProvider;
 
 class TestCase extends \EscolaLms\Core\Tests\TestCase
 {
@@ -32,6 +33,7 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
             EscolaLmsSettingsServiceProvider::class,
             EscolaLmsConsultationsServiceProvider::class,
             EscolaLmsTemplatesSmsServiceProvider::class,
+            SmsServiceProvider::class,
         ];
     }
 
@@ -39,10 +41,5 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
     {
         $app['config']->set('auth.providers.users.model', User::class);
         $app['config']->set('passport.client_uuids', true);
-
-        $app['config']->set('escolalms_templates_sms.twilio.sid', 'XYZ');
-        $app['config']->set('escolalms_templates_sms.twilio.token', 'XYZ');
-        $app['config']->set('escolalms_templates_sms.twilio.from', '+49600600600');
-        $app['config']->set('escolalms_templates_sms.twilio.ssl_verify', true);
     }
 }

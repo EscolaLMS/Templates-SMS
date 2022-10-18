@@ -2,21 +2,11 @@
 
 namespace EscolaLms\TemplatesSms\Facades;
 
-use EscolaLms\TemplatesSms\Drivers\Contracts\SmsDriver;
-use EscolaLms\TemplatesSms\Managers\SmsManager;
 use EscolaLms\TemplatesSms\Testing\SmsFake;
 use Illuminate\Support\Facades\Facade;
 
-
 /**
- * @method static           SmsDriver driver(string $name)
- * @method static           SmsManager extend(string $driver, \Closure $callback)
- * @method static           bool send(string $to, string $content, array $mediaUrls = [], $params = [])
- * @method static           void assertSent($callback)
- * @method static           void assertSentTimes($callback, int $times = 1)
- * @method static           void assertNotSent($callback)
- *
- * @see \EscolaLms\TemplatesSms\Managers\SmsManager
+ * @see \Tzsk\Sms\Sms
  * @see \EscolaLms\TemplatesSms\Testing\SmsFake
  */
 class Sms extends Facade
@@ -40,6 +30,6 @@ class Sms extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return SmsManager::class;
+        return 'tzsk-sms';
     }
 }

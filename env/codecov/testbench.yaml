@@ -15,3 +15,4 @@ providers:
   - EscolaLms\Settings\EscolaLmsSettingsServiceProvider
   - EscolaLms\Templates\EscolaLmsTemplatesServiceProvider
   - EscolaLms\TemplatesSms\EscolaLmsTemplatesSmsServiceProvider
+  - Tzsk\Sms\SmsServiceProvider

@@ -3,7 +3,6 @@
 namespace EscolaLms\TemplatesSms\Testing;
 
 use Closure;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\Assert as PHPUnit;
 
@@ -11,15 +10,13 @@ class SmsFake
 {
     private array $sms = [];
 
-    protected array $recipients = [];
+    private string $recipient;
 
-    protected string $body;
+    private string $body;
 
-    protected ?string $driver = null;
-
-    public function to($recipients): self
+    public function to($recipient): self
     {
-        $this->recipients = Arr::wrap($recipients);
+        $this->recipient = $recipient;
 
         return $this;
     }
@@ -38,7 +35,7 @@ class SmsFake
 
     public function dispatch()
     {
-        $this->sms[] = new Sms($this->recipients, $this->body, [], []);
+        $this->sms[] = new Sms($this->recipient, $this->body, [], []);
     }
 
     public function assertSent($callback): void
@@ -77,7 +74,7 @@ class SmsFake
         }
         else {
             $callback = function (Sms $sms) use ($callback) {
-                return in_array($callback, $sms->to);
+                return $sms->to == $callback;
             };
         }
         return $callback;

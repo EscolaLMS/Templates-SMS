@@ -61,7 +61,7 @@ class TemplateApiTest extends TestCase
         $listener->handle(new ManuallyTriggeredEvent($this->tutor));
 
         Sms::assertSent(function ($sms) {
-            return in_array($this->tutor->phone, $sms->to)
+            return $sms->to === $this->tutor->phone
                 && str_contains($sms->content, ($this->tutor->first_name . ' ' . $this->tutor->last_name));
         });
     }

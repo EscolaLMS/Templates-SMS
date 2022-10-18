@@ -147,7 +147,7 @@ class ConsultationApiTest extends TestCase
     private function assertSms(ConsultationUserPivot $consultationTerm): void
     {
         Sms::assertSent(function ($sms) use ($consultationTerm) {
-            return in_array($this->user->phone, $sms->to)
+            return $sms->to === $this->user->phone
                 && str_contains($sms->content, ($this->user->first_name . ' ' . $this->user->last_name))
                 && str_contains($sms->content, ($consultationTerm->consultation->name))
                 && str_contains($sms->content, ($consultationTerm->consultation->executed_at));

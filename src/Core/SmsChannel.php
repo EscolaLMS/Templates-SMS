@@ -50,7 +50,7 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
         }
 
         try {
-           Sms::send($sections['content'])->to([$user->phone])->dispatch();
+           Sms::send($sections['content'])->to($user->phone)->dispatch();
         } catch (\Exception $exception) {
             Log::error('[' . __CLASS__ . '] ' . $exception->getMessage());
             return false;

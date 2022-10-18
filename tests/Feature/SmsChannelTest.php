@@ -45,9 +45,7 @@ class SmsChannelTest extends TestCase
         $this->assertStringContainsString($admin->email, $arr['data']['content']);
         $this->assertTrue($arr['sent']);
 
-        Sms::assertSent(function ($sms) use ($admin) {
-            return in_array($admin->phone, $sms->to);
-        });
+        Sms::assertSent($admin->phone);
     }
 
     public function testSmsChannelNotificationDisabled(): void
@@ -82,7 +80,7 @@ class SmsChannelTest extends TestCase
         event(new TestEvent($user, $admin));
 
         Sms::assertSent(function ($sms) use ($user, $admin) {
-            return in_array($user->phone, $sms->to) &&
+            return $sms->to === $user->phone &&
                 str_contains($sms->content, $user->email) && str_contains($sms->content, $admin->email);
         });
 

@@ -4,7 +4,6 @@ namespace EscolaLms\TemplatesSms\Tests\Feature;
 
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
-use EscolaLms\Templates\Events\EventWrapper;
 use EscolaLms\Templates\Facades\Template;
 use EscolaLms\Templates\Repository\Contracts\TemplateRepositoryContract;
 use EscolaLms\TemplatesSms\Database\Seeders\TemplateSmsSeeder;
@@ -45,6 +44,7 @@ class SmsChannelTest extends TestCase
 
         $this->assertStringContainsString($admin->email, $arr['data']['content']);
         $this->assertTrue($arr['sent']);
+
         Sms::assertSent($admin->phone);
     }
 
@@ -58,7 +58,6 @@ class SmsChannelTest extends TestCase
         event(new TestEvent($user, $admin));
 
         Sms::assertNotSent($user->phone);
-        Sms::assertNotSent($admin->phone);
     }
 
     public function testSmsChannelNotificationEnabled(): void
@@ -80,10 +79,11 @@ class SmsChannelTest extends TestCase
 
         event(new TestEvent($user, $admin));
 
-        Sms::assertSent($user->phone);
         Sms::assertSent(function ($sms) use ($user, $admin) {
-            return str_contains($sms->content, $user->email) && str_contains($sms->content, $admin->email);
+            return $sms->to === $user->phone &&
+                str_contains($sms->content, $user->email) && str_contains($sms->content, $admin->email);
         });
+
         Sms::assertNotSent($admin->phone);
 
         event(new TestEvent($user, $admin));

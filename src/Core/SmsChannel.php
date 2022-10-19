@@ -8,6 +8,7 @@ use EscolaLms\Templates\Core\TemplateSectionSchema;
 use EscolaLms\Templates\Enums\TemplateSectionTypeEnum;
 use EscolaLms\Templates\Events\EventWrapper;
 use EscolaLms\TemplatesSms\Facades\Sms;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
 use EscolaLms\Core\Models\User;
 
@@ -26,19 +27,13 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
 //        if (!$channelEnabled || !$user->phone) {
 //            return false;
 //        }
-        if (!$user->phone) {
-            return false;
-        }
-        return Sms::send($user->phone, $sections['content']);
+
+        return self::sendMessage($user, $sections);
     }
 
     public static function preview(User $user, array $sections): bool
     {
-        if (!$user->phone) {
-            return false;
-        }
-
-        return Sms::send($user->phone, $sections['content']);
+        return self::sendMessage($user, $sections);
     }
 
     public static function sections(): Collection
@@ -46,5 +41,21 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
         return new Collection([
             new TemplateSectionSchema('content', TemplateSectionTypeEnum::SECTION_TEXT(), true),
         ]);
+    }
+
+    private static function sendMessage(User $user, array $sections): bool
+    {
+        if (!$user->phone) {
+            return false;
+        }
+
+        try {
+           Sms::send($sections['content'])->to($user->phone)->dispatch();
+        } catch (\Exception $exception) {
+            Log::error('[' . __CLASS__ . '] ' . $exception->getMessage());
+            return false;
+        }
+
+        return true;
     }
 }

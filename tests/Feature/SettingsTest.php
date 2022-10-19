@@ -5,6 +5,7 @@ namespace EscolaLms\TemplatesSms\Tests\Feature;
 use EscolaLms\Core\Tests\CreatesUsers;
 use EscolaLms\Settings\Database\Seeders\PermissionTableSeeder;
 use EscolaLms\TemplatesSms\Enums\ConfigEnum;
+use EscolaLms\TemplatesSms\Enums\SmsDriversEnum;
 use EscolaLms\TemplatesSms\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -35,10 +36,11 @@ class SettingsTest extends TestCase
     {
         $configKey = ConfigEnum::CONFIG_KEY;
 
+        $driver = $this->faker->randomElement(SmsDriversEnum::getValues());
+        $requestBinPath = $this->faker->url;
         $twilioSid = $this->faker->uuid;
         $twilioToken = $this->faker->uuid;
         $twilioFrom = $this->faker->phoneNumber;
-        $twilioSslVerify = $this->faker->boolean;
 
         $this->response = $this->actingAs($this->user, 'api')->json(
             'POST',
@@ -46,20 +48,25 @@ class SettingsTest extends TestCase
             [
                 'config' => [
                     [
-                        'key' => "$configKey.twilio.sid",
+                        'key' => "$configKey.default",
+                        'value' => $driver,
+                    ],
+                    [
+                        'key' => "$configKey.drivers.requestbin.path",
+                        'value' => $requestBinPath,
+                    ],
+                    [
+                        'key' => "$configKey.drivers.twilio.sid",
                         'value' => $twilioSid,
                     ],
+
                     [
-                        'key' => "$configKey.twilio.token",
-                        'value' =>  $twilioToken,
+                        'key' => "$configKey.drivers.twilio.token",
+                        'value' => $twilioToken,
                     ],
                     [
-                        'key' => "$configKey.twilio.from",
+                        'key' => "$configKey.drivers.twilio.from",
                         'value' => $twilioFrom,
-                    ],
-                    [
-                        'key' => "$configKey.twilio.ssl_verify",
-                        'value' => $twilioSslVerify,
                     ],
                 ]
             ]
@@ -75,49 +82,62 @@ class SettingsTest extends TestCase
 
         $this->response->assertJsonFragment([
             $configKey => [
-                'twilio' => [
-                    'sid' => [
-                        'full_key' => "$configKey.twilio.sid",
-                        'key' => 'twilio.sid',
-                        'rules' => [
-                            'required',
-                            'string'
-                        ],
-                        'public' => false,
-                        'readonly' => false,
-                        'value' => $twilioSid,
+                'default' => [
+                    'full_key' => "$configKey.default",
+                    'key' => 'default',
+                    'rules' => [
+                        'required',
+                        'string',
+                        'in:' . implode(',', SmsDriversEnum::getValues()),
                     ],
-                    'token' => [
-                        'full_key' => "$configKey.twilio.token",
-                        'key' => 'twilio.token',
-                        'rules' => [
-                            'required',
-                            'string'
+                    'public' => false,
+                    'readonly' => false,
+                    'value' => $driver,
+                ],
+                'drivers' => [
+                    'requestbin' => [
+                        'path' => [
+                            'full_key' => "$configKey.drivers.requestbin.path",
+                            'key' => 'drivers.requestbin.path',
+                            'rules' => [
+                                'string',
+                            ],
+                            'public' => false,
+                            'readonly' => false,
+                            'value' => $requestBinPath,
                         ],
-                        'public' => false,
-                        'value' => $twilioToken,
-                        'readonly' => false,
                     ],
-                    'from' => [
-                        'full_key' => "$configKey.twilio.from",
-                        'key' => 'twilio.from',
-                        'rules' => [
-                            'required',
-                            'string'
+                    'twilio' => [
+                        'sid' => [
+                            'full_key' => "$configKey.drivers.twilio.sid",
+                            'key' => 'drivers.twilio.sid',
+                            'rules' => [
+                                'string',
+                            ],
+                            'public' => false,
+                            'readonly' => false,
+                            'value' => $twilioSid,
                         ],
-                        'public' => false,
-                        'value' => $twilioFrom,
-                        'readonly' => false,
-                    ],
-                    'ssl_verify' => [
-                        'full_key' => "$configKey.twilio.ssl_verify",
-                        'key' => 'twilio.ssl_verify',
-                        'rules' => [
-                            'boolean',
+                        'token' => [
+                            'full_key' => "$configKey.drivers.twilio.token",
+                            'key' => 'drivers.twilio.token',
+                            'rules' => [
+                                'string',
+                            ],
+                            'public' => false,
+                            'readonly' => false,
+                            'value' => $twilioToken,
                         ],
-                        'public' => false,
-                        'value' => $twilioSslVerify,
-                        'readonly' => false,
+                        'from' => [
+                            'full_key' => "$configKey.drivers.twilio.from",
+                            'key' => 'drivers.twilio.from',
+                            'rules' => [
+                                'string',
+                            ],
+                            'public' => false,
+                            'readonly' => false,
+                            'value' => $twilioFrom,
+                        ],
                     ],
                 ],
             ],

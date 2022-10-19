@@ -5,6 +5,7 @@ namespace EscolaLms\TemplatesSms\Providers;
 use EscolaLms\Settings\EscolaLmsSettingsServiceProvider;
 use EscolaLms\Settings\Facades\AdministrableConfig;
 use EscolaLms\TemplatesSms\Enums\ConfigEnum;
+use EscolaLms\TemplatesSms\Enums\SmsDriversEnum;
 use Illuminate\Support\ServiceProvider;
 
 class SettingsServiceProvider extends ServiceProvider
@@ -16,10 +17,13 @@ class SettingsServiceProvider extends ServiceProvider
                 $this->app->register(EscolaLmsSettingsServiceProvider::class);
             }
 
-            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.twilio.sid', ['required', 'string'], false);
-            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.twilio.token', ['required', 'string'], false);
-            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.twilio.from', ['required', 'string'], false);
-            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.twilio.ssl_verify', ['boolean'], false);
+            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.default', ['required', 'string', 'in:' . implode(',', SmsDriversEnum::getValues())], false);
+
+            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.drivers.requestbin.path', ['string'], false);
+
+            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.drivers.twilio.sid', ['string'], false);
+            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.drivers.twilio.token', ['string'], false);
+            AdministrableConfig::registerConfig(ConfigEnum::CONFIG_KEY . '.drivers.twilio.from', ['string'], false);
         }
     }
 }

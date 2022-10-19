@@ -3,24 +3,39 @@
 namespace EscolaLms\TemplatesSms\Testing;
 
 use Closure;
-use EscolaLms\TemplatesSms\Drivers\Contracts\SmsDriver;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\Assert as PHPUnit;
 
-class SmsFake implements SmsDriver
+class SmsFake
 {
-    private array $sms;
+    private array $sms = [];
 
-    public function __construct()
+    private string $recipient;
+
+    private string $body;
+
+    public function to($recipient): self
     {
-        $this->sms = [];
+        $this->recipient = $recipient;
+
+        return $this;
     }
 
-    public function send(string $to, string $content, array $mediaUrls = [], array $params = []): bool
+    public function getBody(): string
     {
-        $this->sms[] = new Sms($to, $content, $mediaUrls, $params);
+        return $this->body;
+    }
 
-        return true;
+    public function send($body): self
+    {
+        $this->body = $body;
+
+        return $this;
+    }
+
+    public function dispatch()
+    {
+        $this->sms[] = new Sms($this->recipient, $this->body, [], []);
     }
 
     public function assertSent($callback): void

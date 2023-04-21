@@ -14,6 +14,8 @@
   "require-dev": {
     "escolalms/auth": "^0",
     "escolalms/consultations": "^0",
+    "escolalms/courses": "^0.4",
+    "escolalms/cart": "^0",
     "orchestra/testbench": "^5.0|^6.0",
     "phpunit/phpunit": "^9.0"
   },

@@ -3,11 +3,11 @@
   "description": "Escola Headless LMS Templates for sms",
   "type": "package",
   "require": {
-    "php": "^7.4|^8.0",
+    "php": ">=7.4",
     "escolalms/core": "^1.2.2",
     "escolalms/settings": "^0.1.2",
     "escolalms/templates": "^0",
-    "laravel/framework": "^8|^9",
+    "laravel/framework": ">=8",
     "twilio/sdk": "^6.42",
     "tzsk/sms": "6.0.0"
   },

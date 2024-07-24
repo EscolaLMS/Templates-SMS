@@ -14,6 +14,9 @@ use EscolaLms\Core\Models\User;
 
 class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannelContract
 {
+    /**
+     * @param array<string, mixed> $sections
+     */
     public static function send(EventWrapper $event, array $sections): bool
     {
         $user = $event->user();
@@ -31,11 +34,17 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
         return self::sendMessage($user, $sections);
     }
 
+    /**
+     * @param array<string, mixed> $sections
+     */
     public static function preview(User $user, array $sections): bool
     {
         return self::sendMessage($user, $sections);
     }
 
+    /**
+     * @return Collection<int, TemplateSectionSchema>
+     */
     public static function sections(): Collection
     {
         return new Collection([
@@ -43,6 +52,9 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
         ]);
     }
 
+    /**
+     * @param array<string, mixed> $sections
+     */
     private static function sendMessage(User $user, array $sections): bool
     {
         if (!$user->phone) {

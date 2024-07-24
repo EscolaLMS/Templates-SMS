@@ -64,7 +64,6 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
         }
 
         try {
-            // @phpstan-ignore-next-line
             Sms::send($sections['content'])->to($user->phone)->dispatch();
         } catch (\Exception $exception) {
             Log::error('[' . __CLASS__ . '] ' . $exception->getMessage());

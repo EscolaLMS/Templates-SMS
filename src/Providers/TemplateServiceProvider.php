@@ -10,7 +10,7 @@ use Illuminate\Support\ServiceProvider;
 
 class TemplateServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
         Template::register(ManuallyTriggeredEvent::class, SmsChannel::class, UserVariables::class);
     }

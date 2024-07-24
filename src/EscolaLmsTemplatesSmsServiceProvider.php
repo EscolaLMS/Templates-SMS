@@ -11,7 +11,7 @@ use Illuminate\Support\ServiceProvider;
 
 class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
 {
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/sms.php', ConfigEnum::CONFIG_KEY);
 
@@ -24,14 +24,14 @@ class EscolaLmsTemplatesSmsServiceProvider extends ServiceProvider
         $this->app->register(TemplateServiceProvider::class);
     }
 
-    public function boot()
+    public function boot(): void
     {
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
         }
     }
 
-    public function bootForConsole()
+    public function bootForConsole(): void
     {
         $this->publishes([
             __DIR__ . '/../config/sms.php' => config_path(ConfigEnum::CONFIG_KEY . '.php'),

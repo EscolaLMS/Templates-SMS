@@ -14,7 +14,7 @@ class Sms extends Facade
     /**
      * Replace the bound instance with a fake.
      */
-    public static function fake()
+    public static function fake(): SmsFake
     {
         $fake = app(SmsFake::class);
 

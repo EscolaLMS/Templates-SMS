@@ -9,6 +9,9 @@ class UserVariables extends SmsVariables
 {
     const VAR_USER_NAME = '@VarUserName';
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function mockedVariables(?User $user = null): array
     {
         $faker = \Faker\Factory::create();
@@ -17,13 +20,20 @@ class UserVariables extends SmsVariables
         ]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function variablesFromEvent(EventWrapper $event): array
     {
         return array_merge(parent::variablesFromEvent($event), [
+            // @phpstan-ignore-next-line
             self::VAR_USER_NAME => $event->getUser()->name,
         ]);
     }
 
+    /**
+     * @return string[]
+     */
     public static function requiredVariables(): array
     {
         return [
@@ -31,6 +41,9 @@ class UserVariables extends SmsVariables
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public static function requiredVariablesInSection(string $sectionKey): array
     {
         if ($sectionKey === 'content') {
@@ -46,6 +59,9 @@ class UserVariables extends SmsVariables
         return null;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function defaultSectionsContent(): array
     {
         return [

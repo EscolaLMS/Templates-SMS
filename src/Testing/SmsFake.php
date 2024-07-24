@@ -8,13 +8,14 @@ use PHPUnit\Framework\Assert as PHPUnit;
 
 class SmsFake
 {
+    /** @var array<int, Sms> */
     private array $sms = [];
 
     private string $recipient;
 
     private string $body;
 
-    public function to($recipient): self
+    public function to(string $recipient): self
     {
         $this->recipient = $recipient;
 
@@ -26,46 +27,49 @@ class SmsFake
         return $this->body;
     }
 
-    public function send($body): self
+    public function send(string $body): self
     {
         $this->body = $body;
 
         return $this;
     }
 
-    public function dispatch()
+    public function dispatch(): void
     {
         $this->sms[] = new Sms($this->recipient, $this->body, [], []);
     }
 
-    public function assertSent($callback): void
+    public function assertSent(Closure|string|null $callback): void
     {
         PHPUnit::assertTrue(
             $this->sent($callback)->count() > 0,
         );
     }
 
-    public function assertSentTimes($callback, $times = 1): void
+    public function assertSentTimes(Closure|string|null $callback, int $times = 1): void
     {
         PHPUnit::assertCount(
             $times, $this->sent($callback)
         );
     }
 
-    public function assertNotSent($callback): void
+    public function assertNotSent(Closure|string|null $callback): void
     {
         PHPUnit::assertCount(
             0, $this->sent($callback)
         );
     }
 
-    private function sent($callback = null)
+    /**
+     * @return Collection<int, Sms>
+     */
+    private function sent(Closure|string|null $callback = null): Collection
     {
         $callback = $this->prepare($callback);
         return (new Collection($this->sms))->filter($callback);
     }
 
-    private function prepare($callback = null): Closure
+    private function prepare(Closure|string|null $callback = null): Closure
     {
         if ($callback instanceof Closure) {
             $callback = function (Sms $sms) use ($callback) {

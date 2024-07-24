@@ -6,14 +6,16 @@ class Sms
 {
     public string $to;
     public string $content;
+    /** @var array<int, string>|null  */
     public ?array $mediaUrls;
+    /** @var array<string, mixed>|null  */
     public ?array $params;
 
     /**
      * @param string $to
      * @param string $content
-     * @param array|null $mediaUrls
-     * @param array|null $params
+     * @param array<int, string>|null $mediaUrls
+     * @param array<string, mixed>|null $params
      */
     public function __construct(string $to, string $content, ?array $mediaUrls, ?array $params)
     {

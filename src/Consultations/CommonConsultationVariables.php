@@ -14,6 +14,9 @@ abstract class CommonConsultationVariables extends SmsVariables
     const VAR_CONSULTATION_TITLE = '@VarConsultationTitle';
     const VAR_CONSULTATION_PROPOSED_TERM = '@VarConsultationProposedTerm';
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function mockedVariables(?User $user = null): array
     {
         $faker = \Faker\Factory::create();
@@ -23,17 +26,27 @@ abstract class CommonConsultationVariables extends SmsVariables
         ]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function variablesFromEvent(EventWrapper $event): array
     {
         return array_merge(parent::variablesFromEvent($event), [
+            // @phpstan-ignore-next-line
             self::VAR_USER_NAME => $event->getUser()->name,
+            // @phpstan-ignore-next-line
             self::VAR_CONSULTATION_TITLE => $event->getConsultationTerm()->consultation->name,
+            // @phpstan-ignore-next-line
             self::VAR_CONSULTATION_PROPOSED_TERM => Carbon::make($event->getConsultationTerm()->executed_at)
+                // @phpstan-ignore-next-line
                 ->setTimezone($event->getUser()->current_timezone)
                 ->format('Y-m-d H:i:s'),
         ]);
     }
 
+    /**
+     * @return string[]
+     */
     public static function requiredVariables(): array
     {
         return [
@@ -43,6 +56,9 @@ abstract class CommonConsultationVariables extends SmsVariables
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public static function requiredVariablesInSection(string $sectionKey): array
     {
         if ($sectionKey === 'content') {

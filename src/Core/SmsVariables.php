@@ -9,16 +9,25 @@ use EscolaLms\Templates\Events\EventWrapper;
 
 abstract class SmsVariables extends AbstractTemplateVariableClass implements TemplateVariableContract
 {
+    /**
+     * @return array<string, mixed>
+     */
     public static function mockedVariables(?User $user = null): array
     {
         return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function variablesFromEvent(EventWrapper $event): array
     {
         return [];
     }
 
+    /**
+     * @return string[]
+     */
     public static function requiredSections(): array
     {
         return [];

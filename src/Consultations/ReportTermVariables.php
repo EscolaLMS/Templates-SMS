@@ -8,6 +8,9 @@ class ReportTermVariables extends CommonConsultationVariables
 {
     const VAR_CONSULTATION_BUYER_NAME = '@VarConsultationBuyerName';
 
+    /**
+     * @return string[]
+     */
     public static function requiredVariables(): array
     {
         return array_merge(parent::requiredVariables(), [
@@ -15,6 +18,9 @@ class ReportTermVariables extends CommonConsultationVariables
         ]);
     }
 
+    /**
+     * @return string[]
+     */
     public static function requiredVariablesInSection(string $sectionKey): array
     {
         if ($sectionKey === 'content') {
@@ -25,13 +31,20 @@ class ReportTermVariables extends CommonConsultationVariables
         return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function variablesFromEvent(EventWrapper $event): array
     {
         return array_merge(parent::variablesFromEvent($event), [
+            // @phpstan-ignore-next-line
             self::VAR_CONSULTATION_BUYER_NAME => $event->getConsultationTerm()->user->name,
         ]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultSectionsContent(): array
     {
         return [

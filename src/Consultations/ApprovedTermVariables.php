@@ -4,6 +4,9 @@ namespace EscolaLms\TemplatesSms\Consultations;
 
 class ApprovedTermVariables extends CommonConsultationVariables
 {
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultSectionsContent(): array
     {
         return [

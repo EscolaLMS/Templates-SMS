@@ -21,7 +21,7 @@ use Illuminate\Support\ServiceProvider;
 
 class ConsultationTemplatesServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
         Template::register(ApprovedTermWithTrainer::class, SmsChannel::class, ApprovedTermWithTrainerVariables::class);
         Template::register(ReportTerm::class, SmsChannel::class, ReportTermVariables::class);

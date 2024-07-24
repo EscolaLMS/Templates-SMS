@@ -39,21 +39,21 @@ class SmsFake
         $this->sms[] = new Sms($this->recipient, $this->body, [], []);
     }
 
-    public function assertSent(Closure $callback): void
+    public function assertSent(Closure|string $callback): void
     {
         PHPUnit::assertTrue(
             $this->sent($callback)->count() > 0,
         );
     }
 
-    public function assertSentTimes(Closure $callback, int $times = 1): void
+    public function assertSentTimes(Closure|string $callback, int $times = 1): void
     {
         PHPUnit::assertCount(
             $times, $this->sent($callback)
         );
     }
 
-    public function assertNotSent(Closure $callback): void
+    public function assertNotSent(Closure|string $callback): void
     {
         PHPUnit::assertCount(
             0, $this->sent($callback)
@@ -63,13 +63,13 @@ class SmsFake
     /**
      * @return Collection<int, Sms>
      */
-    private function sent(Closure $callback = null): Collection
+    private function sent(Closure|string $callback = null): Collection
     {
         $callback = $this->prepare($callback);
         return (new Collection($this->sms))->filter($callback);
     }
 
-    private function prepare(Closure $callback = null): Closure
+    private function prepare(Closure|string $callback = null): Closure
     {
         if ($callback instanceof Closure) {
             $callback = function (Sms $sms) use ($callback) {

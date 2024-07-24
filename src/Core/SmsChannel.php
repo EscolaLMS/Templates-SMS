@@ -58,6 +58,7 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
      */
     private static function sendMessage(User $user, array $sections): bool
     {
+        // @phpstan-ignore-next-line
         if (!$user->phone) {
             return false;
         }

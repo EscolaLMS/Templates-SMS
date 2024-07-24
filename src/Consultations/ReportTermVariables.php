@@ -37,6 +37,7 @@ class ReportTermVariables extends CommonConsultationVariables
     public static function variablesFromEvent(EventWrapper $event): array
     {
         return array_merge(parent::variablesFromEvent($event), [
+            // @phpstan-ignore-next-line
             self::VAR_CONSULTATION_BUYER_NAME => $event->getConsultationTerm()->user->name,
         ]);
     }

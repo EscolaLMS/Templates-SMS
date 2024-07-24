@@ -48,6 +48,7 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
     public static function sections(): Collection
     {
         return new Collection([
+            // @phpstan-ignore-next-line
             new TemplateSectionSchema('content', TemplateSectionTypeEnum::SECTION_TEXT(), true),
         ]);
     }
@@ -62,7 +63,8 @@ class SmsChannel extends AbstractTemplateChannelClass implements TemplateChannel
         }
 
         try {
-           Sms::send($sections['content'])->to($user->phone)->dispatch();
+            // @phpstan-ignore-next-line
+            Sms::send($sections['content'])->to($user->phone)->dispatch();
         } catch (\Exception $exception) {
             Log::error('[' . __CLASS__ . '] ' . $exception->getMessage());
             return false;

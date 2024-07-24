@@ -15,7 +15,7 @@ class SmsFake
 
     private string $body;
 
-    public function to($recipient): self
+    public function to(string $recipient): self
     {
         $this->recipient = $recipient;
 
@@ -34,7 +34,7 @@ class SmsFake
         return $this;
     }
 
-    public function dispatch()
+    public function dispatch(): void
     {
         $this->sms[] = new Sms($this->recipient, $this->body, [], []);
     }
@@ -46,7 +46,7 @@ class SmsFake
         );
     }
 
-    public function assertSentTimes(Closure $callback, $times = 1): void
+    public function assertSentTimes(Closure $callback, int $times = 1): void
     {
         PHPUnit::assertCount(
             $times, $this->sent($callback)
@@ -69,7 +69,7 @@ class SmsFake
         return (new Collection($this->sms))->filter($callback);
     }
 
-    private function prepare($callback = null): Closure
+    private function prepare(Closure $callback = null): Closure
     {
         if ($callback instanceof Closure) {
             $callback = function (Sms $sms) use ($callback) {

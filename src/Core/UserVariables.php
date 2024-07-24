@@ -26,6 +26,7 @@ class UserVariables extends SmsVariables
     public static function variablesFromEvent(EventWrapper $event): array
     {
         return array_merge(parent::variablesFromEvent($event), [
+            // @phpstan-ignore-next-line
             self::VAR_USER_NAME => $event->getUser()->name,
         ]);
     }

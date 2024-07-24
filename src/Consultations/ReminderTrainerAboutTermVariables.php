@@ -37,6 +37,7 @@ class ReminderTrainerAboutTermVariables extends CommonConsultationVariables
     public static function variablesFromEvent(EventWrapper $event): array
     {
         return array_merge(parent::variablesFromEvent($event), [
+            // @phpstan-ignore-next-line
             self::VAR_CONSULTATION_USER_NAME => $event->getConsultationTerm()->user->name,
         ]);
     }

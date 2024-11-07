@@ -7,6 +7,7 @@ use EscolaLms\Consultations\Enum\ConsultationTermStatusEnum;
 use EscolaLms\Consultations\Jobs\ReminderAboutConsultationJob;
 use EscolaLms\Consultations\Models\Consultation;
 use EscolaLms\Consultations\Models\ConsultationUserPivot;
+use EscolaLms\Consultations\Models\ConsultationUserTerm;
 use EscolaLms\Core\Models\User;
 use EscolaLms\TemplatesSms\Database\Seeders\TemplateSmsSeeder;
 use EscolaLms\TemplatesSms\Facades\Sms;
@@ -78,6 +79,10 @@ class ConsultationApiTest extends TestCase
         $this->consultationUserPivot = ConsultationUserPivot::factory([
             'consultation_id' => $this->consultation->getKey(),
             'user_id' => $this->user->getKey(),
+        ])->create();
+
+        /** @var ConsultationUserTerm $userTerm */
+        $userTerm = $this->consultationUserPivot->userTerms()->create([
             'executed_at' => now()->modify(
                 config(
                     'escolalms_consultations.modifier_date.' .
@@ -85,14 +90,16 @@ class ConsultationApiTest extends TestCase
                 )
             )->format('Y-m-d H:i:s'),
             'executed_status' => ConsultationTermStatusEnum::APPROVED
-        ])->create();
-        $this->assertTrue($this->consultationUserPivot->reminder_status === null);
+        ]);
+
+        $this->assertTrue($userTerm->reminder_status === null);
         $job = new ReminderAboutConsultationJob(ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE);
         $job->handle();
         $this->consultationUserPivot->refresh();
+        $userTerm->refresh();
         $this->assertSms($this->consultationUserPivot);
         $this->assertTrue(
-            $this->consultationUserPivot->reminder_status === ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE
+            $userTerm->reminder_status === ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE
         );
     }
 
@@ -115,6 +122,10 @@ class ConsultationApiTest extends TestCase
         $this->consultationUserPivot = ConsultationUserPivot::factory([
             'consultation_id' => $this->consultation->getKey(),
             'user_id' => $this->user->getKey(),
+        ])->create();
+
+        /** @var ConsultationUserTerm $userTerm */
+        $userTerm = $this->consultationUserPivot->userTerms()->create([
             'executed_at' => now()->modify(
                 config(
                     'escolalms_consultations.modifier_date.' .
@@ -122,14 +133,15 @@ class ConsultationApiTest extends TestCase
                 )
             )->format('Y-m-d H:i:s'),
             'executed_status' => ConsultationTermStatusEnum::APPROVED
-        ])->create();
-        $this->assertTrue($this->consultationUserPivot->reminder_status === null);
+        ]);
+        $this->assertTrue($userTerm->reminder_status === null);
         $job = new ReminderAboutConsultationJob(ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE);
         $job->handle();
         $this->consultationUserPivot->refresh();
+        $userTerm->refresh();
         $this->assertSms($this->consultationUserPivot);
         $this->assertTrue(
-            $this->consultationUserPivot->reminder_status === ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE
+            $userTerm->reminder_status === ConsultationTermReminderStatusEnum::REMINDED_HOUR_BEFORE
         );
     }
 

@@ -31,13 +31,14 @@ abstract class CommonConsultationVariables extends SmsVariables
      */
     public static function variablesFromEvent(EventWrapper $event): array
     {
+        // @phpstan-ignore-next-line
+        $executedAt = $event->getConsultationUserTerm() ? $event->getConsultationUserTerm()->executed_at : $event->getConsultationTerm()->executed_at;
         return array_merge(parent::variablesFromEvent($event), [
             // @phpstan-ignore-next-line
             self::VAR_USER_NAME => $event->getUser()->name,
             // @phpstan-ignore-next-line
             self::VAR_CONSULTATION_TITLE => $event->getConsultationTerm()->consultation->name,
-            // @phpstan-ignore-next-line
-            self::VAR_CONSULTATION_PROPOSED_TERM => Carbon::make($event->getConsultationTerm()->executed_at)
+            self::VAR_CONSULTATION_PROPOSED_TERM => Carbon::make($executedAt)
                 // @phpstan-ignore-next-line
                 ->setTimezone($event->getUser()->current_timezone)
                 ->format('Y-m-d H:i:s'),

@@ -31,6 +31,7 @@ abstract class CommonConsultationVariables extends SmsVariables
      */
     public static function variablesFromEvent(EventWrapper $event): array
     {
+        // @phpstan-ignore-next-line
         $executedAt = $event->getConsultationUserTerm() ? $event->getConsultationUserTerm()->executed_at : $event->getConsultationTerm()->executed_at;
         return array_merge(parent::variablesFromEvent($event), [
             // @phpstan-ignore-next-line

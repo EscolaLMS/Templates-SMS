@@ -38,7 +38,6 @@ abstract class CommonConsultationVariables extends SmsVariables
             self::VAR_USER_NAME => $event->getUser()->name,
             // @phpstan-ignore-next-line
             self::VAR_CONSULTATION_TITLE => $event->getConsultationTerm()->consultation->name,
-            // @phpstan-ignore-next-line
             self::VAR_CONSULTATION_PROPOSED_TERM => Carbon::make($executedAt)
                 // @phpstan-ignore-next-line
                 ->setTimezone($event->getUser()->current_timezone)
